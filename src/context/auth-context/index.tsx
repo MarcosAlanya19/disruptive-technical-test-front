@@ -1,5 +1,8 @@
-import React, { createContext, useContext } from 'react';
-import { IregisterPayload, IregisterResponse, registerRequest } from '../../modules/register/services/auth.service';
+import React from 'react';
+import Cookies from 'js-cookie';
+import { IloginPayload, loginRequest } from '../../modules/register/services/login.service';
+import { IregisterPayload, IregisterResponse, registerRequest } from '../../modules/register/services/register.service';
+import { verifyRequest } from '../../modules/register/services/verify.service';
 
 interface IProps {
   children: React.ReactNode;
@@ -7,42 +10,80 @@ interface IProps {
 
 interface IConfigContext {
   user: IregisterResponse;
-  signup: (values: IregisterPayload) => Promise<void>;
   isAuthenticated: boolean;
+  signup: (values: IregisterPayload) => Promise<void>;
+  signin: (values: IloginPayload) => Promise<void>;
+  loading: boolean;
 }
 
-const AuthContext = createContext({} as IConfigContext);
+const AuthContext = React.createContext<IConfigContext | undefined>(undefined);
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 
-export const AuthProvider: React.FC<IProps> = (props) => {
-  const [user, serUser] = React.useState<IregisterResponse>({} as IregisterResponse);
-  const [isAuthenticated, serIsAuthenticated] = React.useState<boolean>(false);
+export const AuthProvider: React.FC<IProps> = ({ children }) => {
+  const [user, setUser] = React.useState<IregisterResponse>({} as IregisterResponse);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+
+  const handleAuthState = (isAuth: boolean, userData: IregisterResponse) => {
+    setIsAuthenticated(isAuth);
+    setUser(userData);
+    setLoading(false);
+  };
 
   const signup = async (values: IregisterPayload) => {
     try {
       const res = await registerRequest({ payload: values });
-      serUser(res.data);
-      serIsAuthenticated(true);
+      handleAuthState(true, res.data);
     } catch (error) {
-      console.log(error);
+      console.error('Signup error:', error);
     }
   };
+
+  const signin = async (values: IloginPayload) => {
+    try {
+      await loginRequest({ payload: values });
+      handleAuthState(true, {} as IregisterResponse); // No user data on signin, adjust as needed
+    } catch (error) {
+      console.error('Signin error:', error);
+    }
+  };
+
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      const token = Cookies.get('token');
+      if (!token) {
+        handleAuthState(false, {} as IregisterResponse);
+        return;
+      }
+
+      try {
+        const res = await verifyRequest();
+        handleAuthState(res.data ? true : false, res.data || {} as IregisterResponse);
+      } catch (error) {
+        handleAuthState(false, {} as IregisterResponse);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         signup,
+        signin,
         isAuthenticated,
+        loading
       }}
     >
-      {props.children}
+      {children}
     </AuthContext.Provider>
   );
 };
