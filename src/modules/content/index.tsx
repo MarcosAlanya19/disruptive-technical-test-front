@@ -1,54 +1,131 @@
-import { Button } from 'flowbite-react';
 import React from 'react';
-import Select from 'react-select';
+
+import { Button } from 'flowbite-react';
+import Skeleton from 'react-loading-skeleton';
+import Select, { SingleValue } from 'react-select';
+import { useAuth } from '../../context/auth-context';
+import { useOptions } from '../../context/options-context';
 import { baseSelectStyles } from '../@common/styles';
 import { useBoolean } from '../@common/use-boolean';
+import { ERoleUser } from '../auth/services/register.service';
 import { ContentCard } from '../home/components/content-card';
 import { CreateContentModal } from '../home/components/create-content-modal';
 import { IcontentPayload } from './services/createContent.service';
+import { IcontentQueryParams } from './services/getContent.service';
 import { IContent } from './types/IContent.type';
-
+import { IOption } from '../@common/types/options';
 
 interface IProps {
-  data: IContent[]
-  onSubmit: (payload: IcontentPayload) => void;
-  isLoading: boolean
+  data: IContent[];
+  onSubmit: (payload: IcontentPayload) => Promise<void>;
+  onChangeFilters: React.Dispatch<React.SetStateAction<IcontentQueryParams>>;
+  isLoading: boolean;
+  refreshContent: () => void;
 }
 
 export const Content: React.FC<IProps> = (props) => {
-  const { data, onSubmit } = props
+  const { data, onSubmit, isLoading, refreshContent, onChangeFilters } = props;
+  const { user } = useAuth();
+
   const createContentModal = useBoolean();
 
   return (
     <>
-      <div className='bg-gray-100 p-6'>
+      <div className='bg-gray-100 p-6 m-h-[calc(100vh-4rem)]'>
         <div className='flex justify-between items-center mb-4'>
           <h2 className='text-xl font-bold'>Contenido adicional</h2>
-          {/* {user?.data?.role === ERoleUser.CREATOR && <Button onClick={createContentModal.on}>Nuevo contenido</Button>} */}
-          <Button onClick={createContentModal.on}>Nuevo contenido</Button>
+          {user?.data?.role === ERoleUser.CREATOR && <Button onClick={createContentModal.on}>Nuevo contenido</Button>}
         </div>
-        <div className='bg-white p-4 mb-6 rounded-lg shadow-md flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6'>
-          <div className='flex-1'>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>Temática</label>
-            <Select styles={baseSelectStyles} options={[{ label: 'hola', value: '' }]} />
+
+        <FilterSection onChangeFilters={onChangeFilters} data={data} />
+        {isLoading ? (
+          <div className='flex justify-center items-center'>
+            <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+              <Skeleton height={200} className='rounded-lg' />
+              <Skeleton height={200} className='rounded-lg' />
+              <Skeleton height={200} className='rounded-lg' />
+            </div>{' '}
           </div>
-          <div className='flex-1'>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría</label>
-            <Select styles={baseSelectStyles} options={[{ label: 'hola', value: '' }]} />
+        ) : data.length === 0 ? (
+          <div className='flex justify-center items-center h-20'>
+            <p>No hay contenido disponible.</p>
           </div>
-          <div className='flex-1'>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>Nombre</label>
-            <Select styles={baseSelectStyles} options={[{ label: 'hola', value: '' }]} />
+        ) : (
+          <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+            {data.map((content) => (
+              <ContentCard key={content.url} data={content} />
+            ))}
           </div>
-        </div>
-        <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-          {data?.map((content) => (
-            <ContentCard key={content.url} data={content} />
-          ))}
-        </div>
+        )}
       </div>
 
-      <CreateContentModal onSubmit={onSubmit} showModal={createContentModal.active} onCloseModal={createContentModal.off} />
+      <CreateContentModal refreshContent={refreshContent} onSubmit={onSubmit} showModal={createContentModal.active} onCloseModal={createContentModal.off} />
     </>
   );
 };
+
+function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFilters: React.Dispatch<React.SetStateAction<IcontentQueryParams>> }) {
+  const { category, theme } = useOptions();
+  const optionsName = [
+    { label: 'Todos', value: '' },
+    ...data.map((content) => ({
+      label: content.title,
+      value: content.title,
+    })),
+  ];
+
+  const options: { label: string; options: IOption[]; isLoading: boolean }[] = [
+    { label: 'Temática', options: theme?.options || [], isLoading: theme?.loading || false },
+    { label: 'Categoría', options: category?.options || [], isLoading: category?.loading || false },
+    {
+      label: 'Nombre',
+      options: optionsName,
+      isLoading: false,
+    },
+  ];
+
+  const handleFilterChange = (selectedOption: SingleValue<IOption>, name: string) => {
+    onChangeFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: selectedOption ? selectedOption.value : '',
+    }));
+  };
+
+  const hasOptions = options.some((option) => option.options.length > 0);
+  if (!hasOptions) return null;
+
+  return (
+    <div className='bg-white p-4 mb-6 rounded-lg shadow-md flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6'>
+      <div className='flex-1'>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Nombre</label>
+        <Select
+          name='name'
+          defaultValue={options.find((option) => option.label === 'Nombre')?.options[0]}
+          options={options.find((option) => option.label === 'Nombre')?.options || []}
+          styles={baseSelectStyles}
+          onChange={(option) => handleFilterChange(option, 'name')}
+        />
+      </div>
+      <div className='flex-1'>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría</label>
+        <Select
+          name='category'
+          defaultValue={options.find((option) => option.label === 'Categoría')?.options[0]}
+          options={options.find((option) => option.label === 'Categoría')?.options || []}
+          styles={baseSelectStyles}
+          onChange={(option) => handleFilterChange(option, 'category')}
+        />
+      </div>
+      <div className='flex-1'>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Temática</label>
+        <Select
+          name='theme'
+          defaultValue={options.find((option) => option.label === 'Temática')?.options[0]}
+          options={options.find((option) => option.label === 'Temática')?.options || []}
+          styles={baseSelectStyles}
+          onChange={(option) => handleFilterChange(option, 'theme')}
+        />
+      </div>
+    </div>
+  );
+}
