@@ -1,4 +1,5 @@
 import { apiClient } from '../../../config/axios.config';
+import { IAuthResponse } from '../types/IAuthResponse';
 
 export enum ERoleUser {
   READER = 'Reader',
@@ -10,24 +11,13 @@ export interface IregisterPayload {
   email: string;
   password: string;
   username: string;
-  role: ERoleUser;
+  role: ERoleUser | undefined;
 }
 
 interface Iregister {
   payload: IregisterPayload;
 }
 
-export interface IregisterResponse {
-  success: boolean;
-  message: string;
-  data: {
-    uuid: string;
-    username: string;
-    email: string;
-    role: ERoleUser
-  };
-}
-
 export const registerRequest = async ({ payload }: Iregister) => {
-  return apiClient.post<IregisterResponse>('/register', { ...payload });
+  return apiClient.post<IAuthResponse>('/register', { ...payload });
 };

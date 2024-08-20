@@ -1,20 +1,14 @@
 import { apiClient } from '../../../config/axios.config';
 
-enum EContentType {
-  IMAGE = 'Image',
-  VIDEO = 'Video',
-  TEXT = 'Text',
-}
-
 export interface IcontentPayload {
   title: string;
-  type: EContentType;
   textContent?: string;
   url?: string;
-  credits: string;
+  categoryId: string;
+  themeId: string;
 }
 
-interface Icontent {
+export interface Icontent {
   payload: IcontentPayload;
 }
 

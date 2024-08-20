@@ -1,4 +1,5 @@
 import { apiClient } from '../../../config/axios.config';
+import { IAuthResponse } from '../types/IAuthResponse';
 
 export interface IloginPayload {
   email: string;
@@ -9,18 +10,6 @@ interface Ilogin {
   payload: IloginPayload;
 }
 
-export interface IloginResponse {
-  success: boolean;
-  message: string;
-  data: {
-    uuid: string;
-    username: string;
-    email: string;
-    createdAt: string,
-    updatedAt: string,
-  };
-}
-
 export const loginRequest = async ({ payload }: Ilogin) => {
-  return apiClient.post<IloginResponse>('/login', { ...payload });
+  return apiClient.post<IAuthResponse>('/login', { ...payload });
 };
