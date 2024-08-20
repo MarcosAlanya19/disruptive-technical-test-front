@@ -66,17 +66,10 @@ export const InputUseForm = <T extends FieldValues>({
             <div className='grid gap-1'>
               {label && <LabelComponent label={label} optional={optional} />}
               <div className={clsx('p-0 min-w-full border rounded-lg', error ? 'border-[#BE1C12]' : 'border-gray-300', rest.disabled && 'bg-gray-200 opacity-50')}>
-                <TextInput
-                  style={{ cursor: rest.disabled ? 'not-allowed' : 'auto' }}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  type={type}
-                  value={field.value || ''}
-                  {...rest}
-                />
+                <TextInput style={{ cursor: rest.disabled ? 'not-allowed' : 'auto' }} onChange={handleChange} onBlur={handleBlur} type={type} value={field.value || ''} {...rest} />
               </div>
               {helperText && <div className='text-gray-500'>{helperText}</div>}
-              {showError && error && <div className='text-red-500'>{error.message}</div>}
+              {error && showError && <div className='text-red-500 text-xs'>{error.message}</div>}
             </div>
           );
         }}

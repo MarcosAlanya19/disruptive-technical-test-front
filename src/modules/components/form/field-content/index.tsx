@@ -17,7 +17,7 @@ export const FieldContent: React.FC<IProps> = (props) => {
         {props.opcional && <div style={{ backgroundColor: '#E9ECEF', borderRadius: '14px', padding: '2px 8px' }}>Opcional</div>}
       </div>
       {props.content}
-      {!!props.error && props.error}
+      {props.error && <div className='text-red-500 text-xs'>{props.error}</div>}
     </div>
   );
 };

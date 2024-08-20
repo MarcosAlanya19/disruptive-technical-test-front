@@ -10,7 +10,7 @@ interface ILoginPayload {
 
 interface IRegisterPayload extends ILoginPayload {
   username: string;
-  role: ERoleUser;
+  role: ERoleUser | undefined;
 }
 
 export interface IAuthPayload {
@@ -22,14 +22,15 @@ export interface IAuthPayload {
 export const AuthContainer: React.FC = () => {
   const { signup, signin } = useAuth();
 
-  const handleAuthSubmit = ({ isRegistering, loginPayload, registerPayload }: IAuthPayload) => {
+  const handleAuthSubmit = async ({ isRegistering, loginPayload, registerPayload }: IAuthPayload) => {
     console.log({ isRegistering, loginPayload, registerPayload });
 
     if (isRegistering) {
-      signin(loginPayload);
-      return;
+      await signin(loginPayload);
+    } else {
+      await signup(registerPayload);
     }
-    signup(registerPayload);
+    return Promise.resolve();
   };
 
   return <Auth onSubmit={handleAuthSubmit} />;
