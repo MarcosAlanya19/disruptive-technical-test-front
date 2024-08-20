@@ -1,34 +1,31 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'flowbite-react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { ICustomOption, IOption } from '../@common/types/options';
 import { useBoolean } from '../@common/use-boolean';
 import { InputUseForm } from '../components/form/input-use-form';
 import { SelectUseForm } from '../components/form/select-use-form';
 import { UseFormWrapper } from '../components/form/use-form-wrapper';
 import { IAuthPayload } from '../home/containers/auth-container';
-import { ERoleUser, IregisterPayload } from './services/register.service';
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const roleOptions: IOption[] = [
-  { label: 'Lector', value: ERoleUser.READER },
-  { label: 'Creador', value: ERoleUser.CREATOR },
-  // { label: 'Administrador', value: ERolseUser.ADMIN },
-];
-
-export interface Iform extends Omit<IregisterPayload, 'role'> {
-  role: ICustomOption<ERoleUser>;
-}
+import { getValidationSchema, Iform, roleOptions } from './index.schema';
 
 interface IProps {
-  onSubmit: (args: IAuthPayload) => void;
+  onSubmit: (args: IAuthPayload) => Promise<void>;
 }
 
 export const Auth: React.FC<IProps> = (props) => {
   const { onSubmit } = props;
   const isAuth = useBoolean(true);
 
-  const methods = useForm<Iform>();
+  const validationSchema = getValidationSchema(!isAuth.active);
+
+  const methods = useForm<Iform>({
+    resolver: zodResolver(validationSchema),
+    defaultValues: { email: '', password: '', role: null, username: '' },
+  });
+
+  console.log({xd: zodResolver(validationSchema)})
+
   const onCustomSubmit = methods.handleSubmit((data) => {
     const loginPayload = {
       email: data.email,
@@ -38,10 +35,12 @@ export const Auth: React.FC<IProps> = (props) => {
     const registerPayload = {
       ...loginPayload,
       username: data.username,
-      role: data.role?.value,
+      role: data?.role?.value,
     };
 
-    onSubmit({ isRegistering: isAuth.active, loginPayload, registerPayload });
+    onSubmit({ isRegistering: isAuth.active, loginPayload, registerPayload }).then(() => {
+      methods.reset();
+    });
   });
 
   return (

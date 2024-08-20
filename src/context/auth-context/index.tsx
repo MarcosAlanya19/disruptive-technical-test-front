@@ -1,21 +1,22 @@
-import React from 'react';
 import Cookies from 'js-cookie';
+import React from 'react';
 import { IloginPayload, loginRequest } from '../../modules/auth/services/login.service';
-import { IregisterPayload, IregisterResponse, registerRequest } from '../../modules/auth/services/register.service';
-import { verifyRequest } from '../../modules/auth/services/verify.service';
 import { logoutRequest } from '../../modules/auth/services/logout.service';
+import { IregisterPayload, registerRequest } from '../../modules/auth/services/register.service';
+import { verifyRequest } from '../../modules/auth/services/verify.service';
+import { IAuthResponse } from '../../modules/auth/types/IAuthResponse';
 
 interface IProps {
   children: React.ReactNode;
 }
 
 interface IConfigContext {
-  user: IregisterResponse;
+  user: IAuthResponse;
   isAuthenticated: boolean;
   signup: (values: IregisterPayload) => Promise<void>;
   signin: (values: IloginPayload) => Promise<void>;
   loading: boolean;
-  logout: () => void
+  logout: () => Promise<void>;
 }
 
 const AuthContext = React.createContext<IConfigContext | undefined>(undefined);
@@ -28,11 +29,13 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<IProps> = ({ children }) => {
-  const [user, setUser] = React.useState<IregisterResponse>({} as IregisterResponse);
+  const [user, setUser] = React.useState<IAuthResponse>({} as IAuthResponse);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 
-  const handleAuthState = (isAuth: boolean, userData: IregisterResponse) => {
+  console.log({ user });
+
+  const handleAuthState = (isAuth: boolean, userData: IAuthResponse) => {
     setUser(userData);
     setLoading(false);
     setIsAuthenticated(isAuth);
@@ -44,32 +47,34 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
   };
 
   const signin = async (values: IloginPayload) => {
-    await loginRequest({ payload: values });
-    handleAuthState(true, {} as IregisterResponse);
+    const res = await loginRequest({ payload: values });
+    handleAuthState(true, res.data);
   };
 
   const logout = async () => {
     await logoutRequest();
-    handleAuthState(false, {} as IregisterResponse);
+    handleAuthState(false, {} as IAuthResponse);
   };
 
   React.useEffect(() => {
     const checkAuth = async () => {
       const token = Cookies.get('token');
       if (!token) {
-        handleAuthState(false, {} as IregisterResponse);
+        handleAuthState(false, {} as IAuthResponse);
         return;
       }
 
+      if (isAuthenticated) return;
       try {
         const res = await verifyRequest();
-        handleAuthState(res.data ? true : false, (res.data || ({} as unknown)) as IregisterResponse);
+        handleAuthState(res.data ? true : false, (res.data || ({} as unknown)) as IAuthResponse);
       } catch (error) {
-        handleAuthState(false, {} as IregisterResponse);
+        handleAuthState(false, {} as IAuthResponse);
       }
     };
 
     checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -80,7 +85,7 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
         signin,
         isAuthenticated,
         loading,
-        logout
+        logout,
       }}
     >
       {children}
