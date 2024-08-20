@@ -17,6 +17,12 @@ La aplicación se desarrolló con React y TypeScript en el frontend, y el backen
 npm install
 ```
 
+## Configuración del entorno
+Crea un archivo .env en la raíz del proyecto basado en el archivo .env.example. Aquí es donde puedes configurar las variables de entorno necesarias para conectar con el backend y otros servicios.
+```
+VITE_API_URL=http://localhost:3000/api
+```
+
 ## Flujo
 - Requerimientos
 -- Creacion de categorias y tematicas (Para la creacion de contenido)
@@ -40,11 +46,7 @@ Gestión de Contenidos:
 - Frontend: React, TypeScript
 - Backend: Node.js, Express
 
-## Configuración del entorno
-Crea un archivo .env en la raíz del proyecto basado en el archivo .env.example. Aquí es donde puedes configurar las variables de entorno necesarias para conectar con el backend y otros servicios.
-```
-VITE_API_URL=http://localhost:3000/api
-```
+
 
 👤 **Marcos Alanya**
 
