@@ -17,6 +17,18 @@ La aplicación se desarrolló con React y TypeScript en el frontend, y el backen
 npm install
 ```
 
+## Flujo
+- Requerimientos
+-- Creacion de categorias y tematicas (Para la creacion de contenido)
+- Registro de usuario
+- Inicio de sesion
+- En caso estes modo lector
+-- Se logra visualizar las categorias y asimismo informacion del usuario
+- En caso este como modo creador
+-- Se podra crear contenidos
+- En caso no este registrado
+-- No se visualizaran las URL
+
 ## Funcionalidades
 Gestión de Contenidos:
 - Vista de contenido disponible por temática.
