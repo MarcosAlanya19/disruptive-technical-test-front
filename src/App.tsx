@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/auth-context';
 import { Home } from './modules/home';
-import { Login, Register } from './modules/register/pages';
 import { ProtectedRoutes } from './routes/protected-routes';
 
 function App() {
@@ -10,9 +9,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-
           <Route element={<ProtectedRoutes />}>
             <Route path='/tasks' element={<h1 className='bg-slate-400'>holaaa</h1>} />
             <Route path='/add-task' element={<h1 className='bg-slate-400'>holaaa</h1>} />

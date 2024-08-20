@@ -1,6 +1,6 @@
 import { apiClient } from '../../../config/axios.config';
 
-export enum ERolseUser {
+export enum ERoleUser {
   READER = 'Reader',
   CREATOR = 'Creator',
   ADMIN = 'Admin',
@@ -10,7 +10,7 @@ export interface IregisterPayload {
   email: string;
   password: string;
   username: string;
-  role: ERolseUser;
+  role: ERoleUser;
 }
 
 interface Iregister {
@@ -24,6 +24,7 @@ export interface IregisterResponse {
     uuid: string;
     username: string;
     email: string;
+    role: ERoleUser
   };
 }
 

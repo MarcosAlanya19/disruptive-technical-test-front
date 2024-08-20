@@ -94,6 +94,7 @@ export const SelectUseForm = <T extends FieldValues, V extends string | string[]
                   styles={baseSelectUseFormStyles(style, formState, name)}
                   defaultValue={defaultValue}
                   isMulti={isMulti}
+                  menuPortalTarget={document.body}
                   onBlur={() => {
                     field.onBlur();
                     trigger(name);

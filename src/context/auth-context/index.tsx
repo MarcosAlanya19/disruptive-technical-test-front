@@ -1,8 +1,9 @@
 import React from 'react';
 import Cookies from 'js-cookie';
-import { IloginPayload, loginRequest } from '../../modules/register/services/login.service';
-import { IregisterPayload, IregisterResponse, registerRequest } from '../../modules/register/services/register.service';
-import { verifyRequest } from '../../modules/register/services/verify.service';
+import { IloginPayload, loginRequest } from '../../modules/auth/services/login.service';
+import { IregisterPayload, IregisterResponse, registerRequest } from '../../modules/auth/services/register.service';
+import { verifyRequest } from '../../modules/auth/services/verify.service';
+import { logoutRequest } from '../../modules/auth/services/logout.service';
 
 interface IProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ interface IConfigContext {
   signup: (values: IregisterPayload) => Promise<void>;
   signin: (values: IloginPayload) => Promise<void>;
   loading: boolean;
+  logout: () => void
 }
 
 const AuthContext = React.createContext<IConfigContext | undefined>(undefined);
@@ -31,27 +33,24 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 
   const handleAuthState = (isAuth: boolean, userData: IregisterResponse) => {
-    setIsAuthenticated(isAuth);
     setUser(userData);
     setLoading(false);
+    setIsAuthenticated(isAuth);
   };
 
   const signup = async (values: IregisterPayload) => {
-    try {
-      const res = await registerRequest({ payload: values });
-      handleAuthState(true, res.data);
-    } catch (error) {
-      console.error('Signup error:', error);
-    }
+    const res = await registerRequest({ payload: values });
+    handleAuthState(true, res.data);
   };
 
   const signin = async (values: IloginPayload) => {
-    try {
-      await loginRequest({ payload: values });
-      handleAuthState(true, {} as IregisterResponse); // No user data on signin, adjust as needed
-    } catch (error) {
-      console.error('Signin error:', error);
-    }
+    await loginRequest({ payload: values });
+    handleAuthState(true, {} as IregisterResponse);
+  };
+
+  const logout = async () => {
+    await logoutRequest();
+    handleAuthState(false, {} as IregisterResponse);
   };
 
   React.useEffect(() => {
@@ -64,7 +63,7 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
 
       try {
         const res = await verifyRequest();
-        handleAuthState(res.data ? true : false, res.data || {} as IregisterResponse);
+        handleAuthState(res.data ? true : false, (res.data || ({} as unknown)) as IregisterResponse);
       } catch (error) {
         handleAuthState(false, {} as IregisterResponse);
       }
@@ -80,7 +79,8 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
         signup,
         signin,
         isAuthenticated,
-        loading
+        loading,
+        logout
       }}
     >
       {children}

@@ -1,0 +1,82 @@
+import { Button } from 'flowbite-react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { ICustomOption, IOption } from '../@common/types/options';
+import { useBoolean } from '../@common/use-boolean';
+import { InputUseForm } from '../components/form/input-use-form';
+import { SelectUseForm } from '../components/form/select-use-form';
+import { UseFormWrapper } from '../components/form/use-form-wrapper';
+import { IAuthPayload } from '../home/containers/auth-container';
+import { ERoleUser, IregisterPayload } from './services/register.service';
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const roleOptions: IOption[] = [
+  { label: 'Lector', value: ERoleUser.READER },
+  { label: 'Creador', value: ERoleUser.CREATOR },
+  // { label: 'Administrador', value: ERolseUser.ADMIN },
+];
+
+export interface Iform extends Omit<IregisterPayload, 'role'> {
+  role: ICustomOption<ERoleUser>;
+}
+
+interface IProps {
+  onSubmit: (args: IAuthPayload) => void;
+}
+
+export const Auth: React.FC<IProps> = (props) => {
+  const { onSubmit } = props;
+  const isAuth = useBoolean(true);
+
+  const methods = useForm<Iform>();
+  const onCustomSubmit = methods.handleSubmit((data) => {
+    const loginPayload = {
+      email: data.email,
+      password: data.password,
+    };
+
+    const registerPayload = {
+      ...loginPayload,
+      username: data.username,
+      role: data.role?.value,
+    };
+
+    onSubmit({ isRegistering: isAuth.active, loginPayload, registerPayload });
+  });
+
+  return (
+    <div className='h-screen p-6 bg-white rounded-lg shadow-md grid items-center'>
+      <div>
+        <h2 className='text-4xl font-semibold mb-4 flex justify-center'>{isAuth.active ? 'INICIO DE SESION' : 'REGISTRO'}</h2>
+        <UseFormWrapper methods={methods} className='grid gap-3'>
+          {!isAuth.active && <InputUseForm label='Nombre de usuario' name='username' placeholder='Marcos' />}
+          <InputUseForm label='Correo electronico' name='email' placeholder='email@example.com' />
+          <InputUseForm type='password' label='Contraseña' name='password' placeholder='********' />
+          {!isAuth.active && <SelectUseForm label='Role' name='role' options={roleOptions} defaultValue={roleOptions[0]} />}
+
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            {isAuth.active ? (
+              <p>
+                ¿No tienes una cuenta?{' '}
+                <span onClick={isAuth.toggle} style={{ color: '#007BFF', cursor: 'pointer', textDecoration: 'underline' }}>
+                  Regístrate
+                </span>
+              </p>
+            ) : (
+              <p>
+                ¿Ya tienes una cuenta?{' '}
+                <span onClick={isAuth.toggle} style={{ color: '#007BFF', cursor: 'pointer', textDecoration: 'underline' }}>
+                  Inicia sesión
+                </span>
+              </p>
+            )}
+          </div>
+
+          <Button type='submit' className='w-full' onClick={onCustomSubmit}>
+            ENVIAR
+          </Button>
+        </UseFormWrapper>
+      </div>
+    </div>
+  );
+};
