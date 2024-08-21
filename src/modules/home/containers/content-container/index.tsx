@@ -35,6 +35,7 @@ export const ContentContainer: React.FC = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
+
   return (
     <>
       {isAuthenticated && <Navbar />}

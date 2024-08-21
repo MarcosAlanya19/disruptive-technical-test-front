@@ -6,6 +6,7 @@ import Select, { SingleValue } from 'react-select';
 import { useAuth } from '../../context/auth-context';
 import { useOptions } from '../../context/options-context';
 import { baseSelectStyles } from '../@common/styles';
+import { IOption } from '../@common/types/options';
 import { useBoolean } from '../@common/use-boolean';
 import { ERoleUser } from '../auth/services/register.service';
 import { ContentCard } from '../home/components/content-card';
@@ -13,7 +14,6 @@ import { CreateContentModal } from '../home/components/create-content-modal';
 import { IcontentPayload } from './services/createContent.service';
 import { IcontentQueryParams } from './services/getContent.service';
 import { IContent } from './types/IContent.type';
-import { IOption } from '../@common/types/options';
 
 interface IProps {
   data: IContent[];
@@ -52,8 +52,8 @@ export const Content: React.FC<IProps> = (props) => {
           </div>
         ) : (
           <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-            {data.map((content) => (
-              <ContentCard key={content.url} data={content} />
+            {data?.map((content) => (
+              <ContentCard key={content.uuid} data={content} />
             ))}
           </div>
         )}
@@ -67,27 +67,32 @@ export const Content: React.FC<IProps> = (props) => {
 function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFilters: React.Dispatch<React.SetStateAction<IcontentQueryParams>> }) {
   const { category, theme } = useOptions();
 
-  const initialOptionsNameRef = React.useRef<IOption[]>([]);
+  const [initialOptionsName, setInitialOptionsName] = React.useState<IOption[]>([]);
 
   React.useEffect(() => {
-    if (data.length > 0 && initialOptionsNameRef.current.length === 0) {
-      initialOptionsNameRef.current = [
+    if (data.length > 0) {
+      const uniqueTitles = new Set<string>(data.map((content) => content.title));
+
+      setInitialOptionsName([
         { label: 'Todos', value: '' },
-        ...data.map((content) => ({
-          label: content.title,
-          value: content.title,
+        ...Array.from(uniqueTitles).map((title) => ({
+          label: title,
+          value: title,
         })),
-      ];
+      ]);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
+
+  const categoryOptions = [{ label: 'Todos', value: '' }, ...(category?.options || [])];
+  const themeOptions = [{ label: 'Todos', value: '' }, ...(theme?.options || [])];
 
   const options: { label: string; options: IOption[]; isLoading: boolean }[] = [
-    { label: 'Temática', options: theme?.options || [], isLoading: theme?.loading || false },
-    { label: 'Categoría', options: category?.options || [], isLoading: category?.loading || false },
+    { label: 'Temática', options: themeOptions, isLoading: theme?.loading || false },
+    { label: 'Categoría', options: categoryOptions, isLoading: category?.loading || false },
     {
       label: 'Nombre',
-      options: initialOptionsNameRef.current,
+      options: initialOptionsName,
       isLoading: false,
     },
   ];
@@ -106,13 +111,7 @@ function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFi
     <div className='bg-white p-4 mb-6 rounded-lg shadow-md flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6'>
       <div className='flex-1'>
         <label className='block text-sm font-medium text-gray-700 mb-1'>Nombre</label>
-        <Select
-          name='name'
-          defaultValue={initialOptionsNameRef.current[0]}
-          options={initialOptionsNameRef.current}
-          styles={baseSelectStyles}
-          onChange={(option) => handleFilterChange(option, 'name')}
-        />
+        <Select name='name' defaultValue={initialOptionsName[0]} options={initialOptionsName} styles={baseSelectStyles} onChange={(option) => handleFilterChange(option, 'name')} />
       </div>
       <div className='flex-1'>
         <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría</label>
