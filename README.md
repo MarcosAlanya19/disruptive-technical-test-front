@@ -17,6 +17,12 @@ La aplicación se desarrolló con React y TypeScript en el frontend, y el backen
 npm install
 ```
 
+## Inicio
+```sh
+npm start
+```
+
+
 ## Configuración del entorno
 Crea un archivo .env en la raíz del proyecto basado en el archivo .env.example. Aquí es donde puedes configurar las variables de entorno necesarias para conectar con el backend y otros servicios.
 ```
