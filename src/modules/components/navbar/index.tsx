@@ -5,7 +5,7 @@ import { useAuth } from '../../../context/auth-context';
 import { translateRole } from '../../@common/translate';
 
 export const Navbar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, moreCredits } = useAuth();
 
   return (
     <NavbarFB fluid rounded className='bg-gray-800 py-2'>
@@ -16,7 +16,7 @@ export const Navbar: React.FC = () => {
         <div className='text-white text-center md:text-right mb-2 md:mb-0'>
           <div className='font-medium'>Bienvenido, {user?.data?.username}</div>
           <div className='flex flex-col md:flex-row gap-2 justify-center md:justify-end'>
-            <div className='text-sm'>Créditos: {user?.data?.credits}</div>
+            <div className='text-sm'>Créditos: {moreCredits ?? user?.data?.credits}</div>
             <div className='text-sm'>Rol: {translateRole[user?.data?.role]}</div>
           </div>
         </div>

@@ -15,6 +15,8 @@ interface IConfigContext {
   signin: (values: IloginPayload) => Promise<void>;
   loading: boolean;
   logout: () => Promise<void>;
+  moreCredits: number;
+  setModeCredits: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AuthContext = React.createContext<IConfigContext | undefined>(undefined);
@@ -27,6 +29,11 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<IProps> = ({ children }) => {
+  const [moreCredits, setModeCredits] = React.useState<number>(0);
+
+
+
+  console.log({moreCredits})
   const [user, setUser] = React.useState<IAuthResponse>({} as IAuthResponse);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
@@ -39,12 +46,14 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
 
   const signup = async (values: IregisterPayload) => {
     const res = await registerRequest({ payload: values });
+    setModeCredits(res.data.data.credits)
     handleAuthState(true, res.data);
   };
 
   const signin = async (values: IloginPayload) => {
     const res = await loginRequest({ payload: values });
     localStorage.setItem('token', res.data.token);
+    setModeCredits(res.data.data.credits)
     handleAuthState(true, res.data);
   };
 
@@ -65,6 +74,7 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
       try {
         const res = await verifyRequest();
         handleAuthState(res.data ? true : false, (res.data || ({} as unknown)) as IAuthResponse);
+        setModeCredits(res.data.data.credits)
       } catch (error) {
         handleAuthState(false, {} as IAuthResponse);
       }
@@ -83,6 +93,8 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
         isAuthenticated,
         loading,
         logout,
+        moreCredits,
+        setModeCredits
       }}
     >
       {children}

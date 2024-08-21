@@ -7,6 +7,7 @@ export interface IverifyResponse {
     uuid: string,
     username: string,
     email: string,
+    credits: number
   },
 }
 

@@ -9,13 +9,15 @@ import { useAuth } from '../../../../context/auth-context';
 import { IcontentQueryParams } from '../../../content/services/getContent.service';
 
 export const ContentContainer: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setModeCredits } = useAuth();
 
   const { data: dataContent, handle: getContent, loading: contentLoading } = useContents();
   const { handle: createContent, loading: contentCreateLoading } = useCreateContent();
 
-  const onSubmit = (payload: IcontentPayload): Promise<void> => {
-    return createContent(payload);
+  const onSubmit = async (payload: IcontentPayload): Promise<void> => {
+    return createContent(payload).then(() => {
+      setModeCredits((prev) => prev + 1);
+    });
   };
 
   const [filters, setFilters] = React.useState<IcontentQueryParams>({
