@@ -111,7 +111,13 @@ function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFi
     <div className='bg-white p-4 mb-6 rounded-lg shadow-md flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6'>
       <div className='flex-1'>
         <label className='block text-sm font-medium text-gray-700 mb-1'>Nombre</label>
-        <Select name='name' defaultValue={initialOptionsName[0]} options={initialOptionsName} styles={baseSelectStyles} onChange={(option) => handleFilterChange(option, 'name')} />
+        <Select
+          name='name'
+          defaultValue={initialOptionsName[0]}
+          options={initialOptionsName}
+          styles={baseSelectStyles}
+          onChange={(option) => handleFilterChange(option as SingleValue<IOption>, 'name')}
+        />
       </div>
       <div className='flex-1'>
         <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría</label>
@@ -120,7 +126,7 @@ function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFi
           defaultValue={options.find((option) => option.label === 'Categoría')?.options[0]}
           options={options.find((option) => option.label === 'Categoría')?.options || []}
           styles={baseSelectStyles}
-          onChange={(option) => handleFilterChange(option, 'category')}
+          onChange={(option) => handleFilterChange(option as SingleValue<IOption>, 'category')}
         />
       </div>
       <div className='flex-1'>
@@ -130,7 +136,7 @@ function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFi
           defaultValue={options.find((option) => option.label === 'Temática')?.options[0]}
           options={options.find((option) => option.label === 'Temática')?.options || []}
           styles={baseSelectStyles}
-          onChange={(option) => handleFilterChange(option, 'theme')}
+          onChange={(option) => handleFilterChange(option as SingleValue<IOption>, 'theme')}
         />
       </div>
     </div>
