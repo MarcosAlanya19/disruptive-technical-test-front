@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'sonner';
 import App from './App.tsx';
 import './index.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+      <App />
     <Toaster richColors />
   </React.StrictMode>
 );

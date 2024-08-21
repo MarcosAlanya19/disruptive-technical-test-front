@@ -38,28 +38,28 @@ export const Content: React.FC<IProps> = (props) => {
         </div>
 
         <FilterSection onChangeFilters={onChangeFilters} data={data} />
-        {isLoading ? (
-          <div className='flex justify-center items-center'>
-            <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-              <Skeleton height={200} className='rounded-lg' />
-              <Skeleton height={200} className='rounded-lg' />
-              <Skeleton height={200} className='rounded-lg' />
+        <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+          {isLoading ? (
+            <>
+              <Skeleton height={200} />
+              <Skeleton height={200} />
+              <Skeleton height={200} />
+            </>
+          ) : data.length === 0 ? (
+            <div className='flex justify-center items-center h-20'>
+              <p>No hay contenido disponible.</p>
             </div>
-          </div>
-        ) : data.length === 0 ? (
-          <div className='flex justify-center items-center h-20'>
-            <p>No hay contenido disponible.</p>
-          </div>
-        ) : (
-          <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-            {data?.map((content) => (
-              <ContentCard key={content.uuid} data={content} />
-            ))}
-          </div>
-        )}
+          ) : (
+            <>
+              {data?.map((content) => (
+                <ContentCard key={content.uuid} data={content} />
+              ))}
+            </>
+          )}
+        </div>
       </div>
 
-      <CreateContentModal refreshContent={refreshContent} onSubmit={onSubmit} showModal={createContentModal.active} onCloseModal={createContentModal.off} />
+      <CreateContentModal isLoading={isLoading} refreshContent={refreshContent} onSubmit={onSubmit} showModal={createContentModal.active} onCloseModal={createContentModal.off} />
     </>
   );
 };

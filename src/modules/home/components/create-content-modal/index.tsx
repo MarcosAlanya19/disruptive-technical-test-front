@@ -16,6 +16,7 @@ interface IProps {
   onCloseModal: () => void;
   onSubmit: (payload: IcontentPayload) => Promise<void>;
   refreshContent: () => void;
+  isLoading: boolean;
 }
 
 export interface Iform extends Omit<IcontentPayload, 'themeId' | 'categoryId' | 'credits'> {
@@ -24,7 +25,7 @@ export interface Iform extends Omit<IcontentPayload, 'themeId' | 'categoryId' | 
 }
 
 export const CreateContentModal: React.FC<IProps> = (props) => {
-  const { onCloseModal, refreshContent, showModal, onSubmit } = props;
+  const { onCloseModal, refreshContent, showModal, onSubmit,isLoading } = props;
   const { category, theme } = useOptions();
 
   const methods = useForm<Iform>({
@@ -78,7 +79,7 @@ export const CreateContentModal: React.FC<IProps> = (props) => {
           </div>
 
           <div className='flex justify-end'>
-            <Button onClick={customSubmit} className='text-white font-bold py-1 px-1 rounded-md'>
+            <Button disabled={isLoading} onClick={customSubmit} className='text-white font-bold py-1 px-1 rounded-md'>
               Crear Contenido
             </Button>
           </div>
