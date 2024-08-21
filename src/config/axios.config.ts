@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { toast } from 'sonner';
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = `${import.meta.env.VITE_API_URL}/api`;
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: apiUrl,
