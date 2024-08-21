@@ -81,7 +81,7 @@ function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFi
         })),
       ]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const categoryOptions = [{ label: 'Todos', value: '' }, ...(category?.options || [])];
