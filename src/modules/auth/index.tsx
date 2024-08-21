@@ -24,7 +24,7 @@ export const Auth: React.FC<IProps> = (props) => {
     defaultValues: { email: '', password: '', role: null, username: '' },
   });
 
-  console.log({xd: zodResolver(validationSchema)})
+  console.log({ xd: zodResolver(validationSchema) });
 
   const onCustomSubmit = methods.handleSubmit((data) => {
     const loginPayload = {
@@ -44,34 +44,34 @@ export const Auth: React.FC<IProps> = (props) => {
   });
 
   return (
-    <div className='h-screen p-6 bg-white rounded-lg shadow-md grid items-center'>
-      <div>
-        <h2 className='text-4xl font-semibold mb-4 flex justify-center'>{isAuth.active ? 'INICIO DE SESION' : 'REGISTRO'}</h2>
+    <div className='h-screen p-6 bg-white rounded-lg shadow-md flex flex-col justify-center items-center'>
+      <div className='w-full max-w-md'>
+        <h2 className='text-4xl font-semibold mb-4 text-center'>{isAuth.active ? 'INICIO DE SESION' : 'REGISTRO'}</h2>
         <UseFormWrapper methods={methods} className='grid gap-3'>
           {!isAuth.active && <InputUseForm label='Nombre de usuario' name='username' placeholder='Marcos' />}
           <InputUseForm label='Correo electronico' name='email' placeholder='email@example.com' />
           <InputUseForm type='password' label='Contraseña' name='password' placeholder='********' />
           {!isAuth.active && <SelectUseForm label='Role' name='role' options={roleOptions} defaultValue={roleOptions[0]} />}
 
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <div className='mt-4 text-center'>
             {isAuth.active ? (
               <p>
                 ¿No tienes una cuenta?{' '}
-                <span onClick={isAuth.toggle} style={{ color: '#007BFF', cursor: 'pointer', textDecoration: 'underline' }}>
+                <span onClick={isAuth.toggle} className='text-blue-500 cursor-pointer underline'>
                   Regístrate
                 </span>
               </p>
             ) : (
               <p>
                 ¿Ya tienes una cuenta?{' '}
-                <span onClick={isAuth.toggle} style={{ color: '#007BFF', cursor: 'pointer', textDecoration: 'underline' }}>
+                <span onClick={isAuth.toggle} className='text-blue-500 cursor-pointer underline'>
                   Inicia sesión
                 </span>
               </p>
             )}
           </div>
 
-          <Button type='submit' className='w-full' onClick={onCustomSubmit}>
+          <Button type='submit' className='w-full mt-4' onClick={onCustomSubmit}>
             ENVIAR
           </Button>
         </UseFormWrapper>

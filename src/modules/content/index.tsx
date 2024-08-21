@@ -31,9 +31,9 @@ export const Content: React.FC<IProps> = (props) => {
 
   return (
     <>
-      <div className='bg-gray-100 p-6 m-h-[calc(100vh-4rem)]'>
-        <div className='flex justify-between items-center mb-4'>
-          <h2 className='text-xl font-bold'>Contenido adicional</h2>
+      <div className='bg-gray-100 p-6 min-h-[calc(100vh-4rem)]'>
+        <div className='flex flex-col sm:flex-row justify-between items-center mb-4'>
+          <h2 className='text-xl font-bold mb-4 sm:mb-0'>Contenido adicional</h2>
           {user?.data?.role === ERoleUser.CREATOR && <Button onClick={createContentModal.on}>Nuevo contenido</Button>}
         </div>
 
@@ -44,7 +44,7 @@ export const Content: React.FC<IProps> = (props) => {
               <Skeleton height={200} className='rounded-lg' />
               <Skeleton height={200} className='rounded-lg' />
               <Skeleton height={200} className='rounded-lg' />
-            </div>{' '}
+            </div>
           </div>
         ) : data.length === 0 ? (
           <div className='flex justify-center items-center h-20'>
