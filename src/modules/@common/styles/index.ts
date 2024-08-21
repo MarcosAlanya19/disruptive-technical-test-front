@@ -1,23 +1,23 @@
-import { StylesConfig } from "react-select";
-import { IOption } from "../types/options";
+import { GroupBase, StylesConfig } from 'react-select';
+import { IOption } from '../types/options';
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const baseSelectStyles: StylesConfig<IOption, false, never>  = {
-  menuPortal: (base: React.CSSProperties) => ({
+// Define the styles for the base select component
+export const baseSelectStyles: StylesConfig<IOption, boolean, GroupBase<IOption>> | undefined = {
+  menuPortal: (base) => ({
     ...base,
     zIndex: 99,
   }),
-  placeholder: (provided: React.CSSProperties) => ({
+  placeholder: (provided) => ({
     ...provided,
   }),
-  control: (provided: React.CSSProperties) => ({
+  control: (provided) => ({
     ...provided,
     borderWidth: '1px',
     borderRadius: '8px',
     fontSize: '14px',
     minHeight: '45px',
   }),
-  menuList: (provided: React.CSSProperties) => ({
+  menuList: (provided) => ({
     ...provided,
     overflowX: 'hidden',
   }),

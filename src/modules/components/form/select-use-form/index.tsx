@@ -1,49 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
-import React from 'react';
 import { Controller, FieldValues, Path, RegisterOptions, useFormContext } from 'react-hook-form';
-import Select, { Props as SelectProps } from 'react-select';
-import { FieldContent } from '../field-content';
+import Select, { GroupBase, Props as SelectProps, StylesConfig } from 'react-select';
 import { ICustomOption } from '../../../@common/types/options';
+import { FieldContent } from '../field-content';
+import { baseSelectStyles } from '../../../@common/styles';
 
 type SelectValue<V> = ICustomOption<V> | ICustomOption<V>[] | null;
-
-interface Style {
-  menuPortal?: React.CSSProperties;
-  placeholder?: React.CSSProperties;
-  control?: React.CSSProperties;
-  menuList?: React.CSSProperties;
-}
-
-export const baseSelectUseFormStyles = (
-  style?: Partial<Style>,
-  formState?: any,
-  name?: string
-) => ({
-  menuPortal: (base: React.CSSProperties) => ({
-    ...base,
-    zIndex: 99,
-    ...style?.menuPortal,
-  }),
-  placeholder: (provided: React.CSSProperties) => ({
-    ...provided,
-    ...style?.placeholder,
-  }),
-  control: (provided: React.CSSProperties) => ({
-    ...provided,
-    borderWidth: '1px',
-    borderRadius: '8px',
-    fontSize: '14px',
-    minHeight: '45px',
-    borderColor: formState?.errors[name] ? 'rgb(190, 28, 18)' : provided.borderColor,
-    ...style?.control,
-  }),
-  menuList: (provided: React.CSSProperties) => ({
-    ...provided,
-    overflowX: 'hidden',
-    ...style?.menuList,
-  }),
-  ...style,
-});
 
 interface CustomSelectProps<T extends FieldValues, V = string> {
   name: Path<T>;
@@ -59,6 +21,7 @@ interface CustomSelectProps<T extends FieldValues, V = string> {
   style?: Partial<SelectProps<ICustomOption<V>, boolean>>;
 }
 
+
 export const SelectUseForm = <T extends FieldValues, V extends string | string[] = string>({
   name,
   label,
@@ -68,10 +31,9 @@ export const SelectUseForm = <T extends FieldValues, V extends string | string[]
   isMulti = false,
   placeholder,
   onChange,
-  style,
   ...rest
 }: CustomSelectProps<T, V> & SelectProps<ICustomOption<V>, boolean>) => {
-  const { control, trigger, formState } = useFormContext<T>();
+  const { control, trigger } = useFormContext<T>();
   const options = [...propOptions];
 
   return (
@@ -91,9 +53,9 @@ export const SelectUseForm = <T extends FieldValues, V extends string | string[]
               content={
                 <Select<ICustomOption<V>, boolean>
                   placeholder={placeholder || 'Selecciona una opción'}
-                  styles={baseSelectUseFormStyles(style, formState, name)}
                   defaultValue={defaultValue}
                   isMulti={isMulti}
+                  styles={baseSelectStyles as StylesConfig<ICustomOption<V>, boolean, GroupBase<ICustomOption<V>>> | undefined}
                   menuPortalTarget={document.body}
                   onBlur={() => {
                     field.onBlur();
@@ -106,9 +68,7 @@ export const SelectUseForm = <T extends FieldValues, V extends string | string[]
                   }}
                   value={field.value}
                   options={options}
-                  filterOption={(option, inputValue) =>
-                    option.label.toLowerCase().includes(inputValue.toLowerCase())
-                  }
+                  filterOption={(option, inputValue) => option.label.toLowerCase().includes(inputValue.toLowerCase())}
                   {...rest}
                 />
               }
