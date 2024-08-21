@@ -42,7 +42,6 @@ export const CreateContentModal: React.FC<IProps> = (props) => {
   };
 
   const customSubmit = methods.handleSubmit((values) => {
-    console.log({ values });
     const createContentPayload: IcontentPayload = {
       title: values.title,
       categoryId: values.categoryId.value,

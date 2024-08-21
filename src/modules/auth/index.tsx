@@ -24,8 +24,6 @@ export const Auth: React.FC<IProps> = (props) => {
     defaultValues: { email: '', password: '', role: null, username: '' },
   });
 
-  console.log({ xd: zodResolver(validationSchema) });
-
   const onCustomSubmit = methods.handleSubmit((data) => {
     const loginPayload = {
       email: data.email,

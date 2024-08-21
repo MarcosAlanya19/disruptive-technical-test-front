@@ -23,8 +23,6 @@ export const AuthContainer: React.FC = () => {
   const { signup, signin } = useAuth();
 
   const handleAuthSubmit = async ({ isRegistering, loginPayload, registerPayload }: IAuthPayload) => {
-    console.log({ isRegistering, loginPayload, registerPayload });
-
     if (isRegistering) {
       await signin(loginPayload);
     } else {

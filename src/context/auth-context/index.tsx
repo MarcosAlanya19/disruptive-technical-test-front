@@ -33,8 +33,6 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 
-  console.log({ user });
-
   const handleAuthState = (isAuth: boolean, userData: IAuthResponse) => {
     setUser(userData);
     setLoading(false);

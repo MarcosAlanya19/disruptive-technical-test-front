@@ -66,20 +66,28 @@ export const Content: React.FC<IProps> = (props) => {
 
 function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFilters: React.Dispatch<React.SetStateAction<IcontentQueryParams>> }) {
   const { category, theme } = useOptions();
-  const optionsName = [
-    { label: 'Todos', value: '' },
-    ...data.map((content) => ({
-      label: content.title,
-      value: content.title,
-    })),
-  ];
+
+  const initialOptionsNameRef = React.useRef<IOption[]>([]);
+
+  React.useEffect(() => {
+    if (data.length > 0 && initialOptionsNameRef.current.length === 0) {
+      initialOptionsNameRef.current = [
+        { label: 'Todos', value: '' },
+        ...data.map((content) => ({
+          label: content.title,
+          value: content.title,
+        })),
+      ];
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const options: { label: string; options: IOption[]; isLoading: boolean }[] = [
     { label: 'Temática', options: theme?.options || [], isLoading: theme?.loading || false },
     { label: 'Categoría', options: category?.options || [], isLoading: category?.loading || false },
     {
       label: 'Nombre',
-      options: optionsName,
+      options: initialOptionsNameRef.current,
       isLoading: false,
     },
   ];
@@ -100,8 +108,8 @@ function FilterSection({ data, onChangeFilters }: { data: IContent[]; onChangeFi
         <label className='block text-sm font-medium text-gray-700 mb-1'>Nombre</label>
         <Select
           name='name'
-          defaultValue={options.find((option) => option.label === 'Nombre')?.options[0]}
-          options={options.find((option) => option.label === 'Nombre')?.options || []}
+          defaultValue={initialOptionsNameRef.current[0]}
+          options={initialOptionsNameRef.current}
           styles={baseSelectStyles}
           onChange={(option) => handleFilterChange(option, 'name')}
         />

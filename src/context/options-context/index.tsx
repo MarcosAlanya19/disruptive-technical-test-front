@@ -34,9 +34,9 @@ export const OptionsProvider: React.FC<IProps> = ({ children }) => {
   const { data: dataThemes, handle: getThemes, loading: themeLoging } = useThemes();
   const { data: dataCategories, handle: getCategories, loading: categoryLoging } = useCategories();
 
-  const userOptions = mapOptions(dataUsers, 'name', 'uuid', true);
-  const themeOptions = mapOptions(dataThemes, 'name', 'uuid', true);
-  const categoryOptions = mapOptions(dataCategories, 'name', 'uuid', true);
+  const userOptions = mapOptions(dataUsers, 'name', 'uuid');
+  const themeOptions = mapOptions(dataThemes, 'name', 'uuid');
+  const categoryOptions = mapOptions(dataCategories, 'name', 'uuid');
 
   React.useEffect(() => {
     (async () => {
