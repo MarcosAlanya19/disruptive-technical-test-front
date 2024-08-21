@@ -1,15 +1,11 @@
 ## Prueba Técnica 
 La aplicación se desarrolló con React y TypeScript en el frontend, y el backend está basado en Node.js con Express y MongoDB como base de datos.
 
-## Despliegue
-div style="background-color: #f4f4f4; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
-  
+div style="background-color: #f4f4f4; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">  
   <h2 style="font-size: 24px; color: #333;">Despliegue</h2>
-  
   <p style="font-size: 16px; color: #666; margin-bottom: 15px;">
     Puedes ver la aplicación desplegada en el siguiente enlace:
   </p>
-  
   <a href="https://disruptive-technical-test-front.onrender.com/" 
      style="display: inline-block; font-size: 18px; color: #fff; background-color: #007bff; padding: 10px 20px; border-radius: 5px; text-decoration: none; transition: background-color 0.3s;">
     Ir al despliegue
