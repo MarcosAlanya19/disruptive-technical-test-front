@@ -1,7 +1,5 @@
-import Cookies from 'js-cookie';
 import React from 'react';
 import { IloginPayload, loginRequest } from '../../modules/auth/services/login.service';
-import { logoutRequest } from '../../modules/auth/services/logout.service';
 import { IregisterPayload, registerRequest } from '../../modules/auth/services/register.service';
 import { verifyRequest } from '../../modules/auth/services/verify.service';
 import { IAuthResponse } from '../../modules/auth/types/IAuthResponse';
@@ -46,17 +44,18 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
 
   const signin = async (values: IloginPayload) => {
     const res = await loginRequest({ payload: values });
+    localStorage.setItem('token', res.data.token);
     handleAuthState(true, res.data);
   };
 
   const logout = async () => {
-    await logoutRequest();
+    localStorage.removeItem('token');
     handleAuthState(false, {} as IAuthResponse);
   };
 
   React.useEffect(() => {
     const checkAuth = async () => {
-      const token = Cookies.get('token');
+      const token = localStorage.getItem('token');
       if (!token) {
         handleAuthState(false, {} as IAuthResponse);
         return;
