@@ -30,10 +30,6 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<IProps> = ({ children }) => {
   const [moreCredits, setModeCredits] = React.useState<number>(0);
-
-
-
-  console.log({moreCredits})
   const [user, setUser] = React.useState<IAuthResponse>({} as IAuthResponse);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);

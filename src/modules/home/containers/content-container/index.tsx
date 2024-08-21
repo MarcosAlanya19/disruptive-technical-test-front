@@ -8,7 +8,7 @@ import { Navbar } from '../../../components/navbar';
 import { useAuth } from '../../../../context/auth-context';
 import { IcontentQueryParams } from '../../../content/services/getContent.service';
 
-export const ContentContainer: React.FC = () => {
+const ContentContainer: React.FC = () => {
   const { isAuthenticated, setModeCredits } = useAuth();
 
   const { data: dataContent, handle: getContent, loading: contentLoading } = useContents();
@@ -45,3 +45,5 @@ export const ContentContainer: React.FC = () => {
     </>
   );
 };
+
+export default ContentContainer

@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'flowbite-react';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useBoolean } from '../@common/use-boolean';
 import { InputUseForm } from '../components/form/input-use-form';
@@ -46,7 +47,7 @@ export const Auth: React.FC<IProps> = (props) => {
       <div className='w-full max-w-md'>
         <h2 className='text-4xl font-semibold mb-4 text-center'>{isAuth.active ? 'INICIO DE SESION' : 'REGISTRO'}</h2>
         <UseFormWrapper methods={methods} className='grid gap-3'>
-          {!isAuth.active && <InputUseForm label='Nombre de usuario' name='username' placeholder='Marcos' />}
+          {!isAuth.active && <InputUseForm label='Nombre de usuario' name='username' placeholder='Ingrese nombre de usuario' />}
           <InputUseForm label='Correo electronico' name='email' placeholder='email@example.com' />
           <InputUseForm type='password' label='Contraseña' name='password' placeholder='********' />
           {!isAuth.active && <SelectUseForm label='Role' name='role' options={roleOptions} defaultValue={roleOptions[0]} />}
@@ -70,7 +71,7 @@ export const Auth: React.FC<IProps> = (props) => {
           </div>
 
           <Button type='submit' className='w-full mt-4' onClick={onCustomSubmit}>
-            ENVIAR
+            {isAuth.active ? 'ENVIAR' : 'REGISTRAR'}
           </Button>
         </UseFormWrapper>
       </div>

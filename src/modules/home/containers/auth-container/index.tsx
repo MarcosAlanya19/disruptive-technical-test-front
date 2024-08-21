@@ -19,7 +19,7 @@ export interface IAuthPayload {
   registerPayload: IRegisterPayload;
 }
 
-export const AuthContainer: React.FC = () => {
+const AuthContainer: React.FC = () => {
   const { signup, signin } = useAuth();
 
   const handleAuthSubmit = async ({ isRegistering, loginPayload, registerPayload }: IAuthPayload) => {
@@ -33,3 +33,5 @@ export const AuthContainer: React.FC = () => {
 
   return <Auth onSubmit={handleAuthSubmit} />;
 };
+
+export default AuthContainer
